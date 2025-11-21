@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sửa Dịch vụ</title>
+    <style>
+        body { font-family: Arial; padding:20px; }
+        .btn { padding:6px 12px; border:none; cursor:pointer; }
+        .save-btn { background:#2ecc71; color:white; }
+    </style>
+</head>
+<body>
+
+<h2>Sửa dịch vụ</h2>
+
+<form th:action="@{/service/update}" th:object="${service}" method="post">
+
+    <input type="hidden" th:field="*{serviceId}">
+    <input type="hidden" name="inventoryId" th:value="${inventory.inventoryId}">
+
+    <label>Tên dịch vụ:</label><br>
+    <input type="text" th:field="*{serviceName}" required><br><br>
+
+    <label>Mô tả:</label><br>
+    <input type="text" th:field="*{description}"><br><br>
+
+    <label>Số lượng tổng:</label><br>
+    <input type="number" name="totalQuantity"
+           th:value="${inventory.totalQuantity}" min="0" required><br><br>
+
+    <button class="btn save-btn" type="submit">Lưu thay đổi</button>
+
+</form>
+
+</body>
+</html>

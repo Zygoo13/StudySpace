@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bước 4 - Xác nhận đặt chỗ</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <h2 class="text-primary mb-4">Bước 4: Xác nhận thông tin</h2>
+
+    <form th:action="@{/booking/confirm}" th:object="${dto}" method="post"
+          class="card p-4 shadow-sm">
+
+        <input type="hidden" th:field="*{customerId}">
+        <input type="hidden" th:field="*{date}">
+        <input type="hidden" th:field="*{startTime}">
+        <input type="hidden" th:field="*{comboId}">
+        <input type="hidden" th:field="*{deskIds}">
+        <input type="hidden" th:field="*{peopleCount}">
+
+        <!-- Thời gian -->
+        <h4>Thông tin thời gian</h4>
+        <p>
+            Ngày: <strong th:text="${dto.date}"></strong><br>
+            Giờ bắt đầu: <strong th:text="${dto.startTime}"></strong><br>
+            Combo: <strong th:text="${combo.comboName}"></strong><br>
+            Giờ kết thúc: <strong th:text="${#temporals.format(end,'HH:mm dd/MM/yyyy')}"></strong>
+        </p>
+
+        <!-- Phòng -->
+        <h4 class="mt-4">Phòng & bàn</h4>
+        <p>
+            Phòng: <strong th:text="${room.roomName}"></strong><br>
+            Tầng: <strong th:text="${room.floor.floorName}"></strong>
+        </p>
+
+        <ul class="list-group mb-3">
+            <li class="list-group-item" th:each="d : ${desks}">
+                <strong th:text="${d.deskName}"></strong>
+                – <span th:text="${d.capacity}"></span> ghế
+            </li>
+        </ul>
+
+        <!-- Khách -->
+        <h4>Khách hàng</h4>
+        <p>
+            Tên: <strong th:text="${customer.name}"></strong><br>
+            SĐT: <strong th:text="${customer.phone}"></strong>
+        </p>
+
+        <!-- Note -->
+        <h4 class="mt-4">Ghi chú</h4>
+        <textarea th:field="*{note}" rows="3" class="form-control mb-4"></textarea>
+
+        <button type="submit" class="btn btn-success w-100">Xác nhận đặt chỗ</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

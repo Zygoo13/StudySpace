@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lịch đặt theo ngày</title>
+    <style>
+        body { font-family: Arial, sans-serif; background:#f4f6f9; padding:20px; }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .toolbar-left, .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        table { width:100%; border-collapse: collapse; margin-top:10px; }
+        th, td { border:1px solid #ccc; padding:8px 10px; text-align:left; }
+        th { background:#3498db; color:white; }
+        tr:nth-child(even) { background:#f8f8f8; }
+        a.btn {
+            padding:8px 12px;
+            border-radius:5px;
+            text-decoration:none;
+            font-size:14px;
+        }
+        .btn-create { background:#2ecc71; color:white; }
+        .btn-edit   { color:#2980b9; }
+        .btn-delete { color:#e74c3c; }
+    </style>
+</head>
+<body>
+
+<h2>Lịch đặt theo ngày</h2>
+
+<div class="toolbar">
+    <div class="toolbar-left">
+        <form method="get" th:action="@{/reservation/daily}">
+            <label>Chọn ngày: </label>
+            <input type="date" name="date"
+                   th:value="${selectedDate}">
+            <button type="submit">Xem</button>
+        </form>
+    </div>
+
+    <div class="toolbar-right">
+        <a href="/booking/new" class="btn btn-create">+ Tạo đặt bàn mới</a>
+    </div>
+</div>
+
+<table>
+    <tr>
+        <th>Bàn</th>
+        <th>Phòng</th>
+        <th>Tầng</th>
+        <th>Khách</th>
+        <th>Thời gian</th>
+        <th>Combo</th>
+        <th>Số người</th>
+        <th>Ghi chú</th>
+        <th>Hành động</th>
+    </tr>
+
+    <tr th:if="${#lists.isEmpty(reservations)}">
+        <td colspan="9">Không có đặt chỗ nào trong ngày này.</td>
+    </tr>
+
+    <tr th:each="r : ${reservations}">
+        <!-- Bàn: liệt kê nhiều bàn, cách nhau bằng dấu phẩy -->
+        <td>
+            <span th:each="d, iter : ${r.desks}">
+                <span th:text="${d.deskName}"></span>
+                <span th:if="${!iter.last}">, </span>
+            </span>
+        </td>
+
+        <!-- Phòng / Tầng lấy từ bàn đầu tiên -->
+        <td th:text="${#lists.isEmpty(r.desks) ? '---' : r.desks[0].room.roomName}"></td>
+        <td th:text="${#lists.isEmpty(r.desks) ? '---' : r.desks[0].room.floor.floorName}"></td>
+
+        <td th:text="${r.customer != null ? r.customer.name : '---'}"></td>
+
+        <td>
+            <span th:text="${#temporals.format(r.startTime, 'HH:mm')}"></span>
+            -
+            <span th:text="${#temporals.format(r.endTime, 'HH:mm')}"></span>
+        </td>
+
+        <td th:text="${r.combo != null ? r.combo.comboName : '---'}"></td>
+
+        <td th:text="${r.peopleCount}"></td>
+
+        <td th:text="${r.note}"></td>
+
+        <td>
+            <a th:href="@{'/reservation/edit/' + ${r.reservationId}}" class="btn btn-edit">Sửa</a>
+            <a th:href="@{'/reservation/delete/' + ${r.reservationId}} + (${selectedDate} != null ? '?date=' + ${selectedDate} : '')"
+               class="btn btn-delete"
+               onclick="return confirm('Xóa đặt chỗ này?');">
+                Xóa
+            </a>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

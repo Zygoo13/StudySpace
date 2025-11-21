@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sửa đặt bàn</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        .box { background: #f8f8f8; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        label { font-weight: bold; }
+        input, select { padding: 8px; width: 100%; margin: 5px 0 15px; }
+        .desk-list { display: flex; flex-wrap: wrap; }
+        .desk-item { width: 25%; padding: 5px 0; }
+        button { padding: 10px 20px; }
+    </style>
+
+    <script>
+        function loadDesks() {
+            const roomId = document.getElementById("roomSelect").value;
+            window.location = "/reservation/edit/" + document.getElementById("reservationId").value + "?room=" + roomId;
+        }
+    </script>
+</head>
+
+<body>
+<div class="container">
+    <h2>Sửa thông tin đặt bàn</h2>
+
+    <form method="post" th:action="@{/reservation/update}">
+
+        <input type="hidden" name="reservationId" id="reservationId" th:value="${reservation.reservationId}"/>
+
+        <div class="box">
+            <label>Khách hàng</label>
+            <div>
+                <input type="text"
+                       th:value="${reservation.customer.name + ' (' + reservation.customer.phone + ')'}"
+                       disabled />
+            </div>
+
+        </div>
+
+        <div class="box">
+            <label>Combo</label>
+            <select name="comboId">
+                <option th:each="c : ${combos}"
+                        th:value="${c.comboId}"
+                        th:text="${c.comboName}"
+                        th:selected="${c.comboId == reservation.combo.comboId}">
+                </option>
+            </select>
+
+            <label>Thời gian bắt đầu</label>
+            <input type="datetime-local"
+                   name="startTime"
+                   th:value="${#temporals.format(reservation.startTime, 'yyyy-MM-dd''T''HH:mm')}" />
+
+            <label>Thời gian kết thúc</label>
+            <input type="datetime-local"
+                   name="endTime"
+                   th:value="${#temporals.format(reservation.endTime, 'yyyy-MM-dd''T''HH:mm')}" />
+        </div>
+
+        <div class="box">
+            <label>Phòng</label>
+            <select id="roomSelect" name="roomId" onchange="loadDesks()">
+                <option th:each="r : ${rooms}"
+                        th:value="${r.roomId}"
+                        th:text="${r.roomName}"
+                        th:selected="${r.roomId == reservation.room.roomId}">
+                </option>
+            </select>
+
+            <label>Chọn bàn</label>
+
+            <div class="desk-list">
+                <label th:each="d : ${desks}" class="desk-item">
+                    <input type="checkbox"
+                           name="deskIds"
+                           th:value="${d.deskId}"
+                           th:checked="${reservation.desks.contains(d)}" />
+                    <span th:text="${d.deskName}"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="box">
+            <label>Số người</label>
+            <input type="number" name="peopleCount" th:value="${reservation.peopleCount}" />
+
+            <label>Ghi chú</label>
+            <input type="text" name="note" th:value="${reservation.note}" />
+        </div>
+
+        <button type="submit">Lưu thay đổi</button>
+        <a href="/reservation/daily">Quay lại</a>
+
+    </form>
+</div>
+</body>
+</html>

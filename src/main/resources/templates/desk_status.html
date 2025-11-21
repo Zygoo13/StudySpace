@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tình trạng các bàn</title>
+    <style>
+        body { font-family: Arial; background: #f4f6f9; padding: 20px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            border-radius: 10px;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border-left: 8px solid;
+        }
+
+        .free { border-color: #2ecc71; }   /* xanh lá */
+        .busy { border-color: #e74c3c; }   /* đỏ */
+        .soon { border-color: #3498db; }   /* xanh dương */
+
+        .title { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+        .info  { margin: 4px 0; }
+    </style>
+</head>
+<body>
+
+<h2>Tình trạng các bàn</h2>
+<p>Thời gian hiện tại: <b th:text="${#temporals.format(now, 'HH:mm dd/MM/yyyy')}"></b></p>
+
+<div class="grid">
+
+    <div th:each="desk : ${desks}"
+         th:with="res = ${deskStatus[desk.deskId]}"
+         th:class="'card ' + (${res} == null ? 'free' : 'busy')">
+
+        <div class="title"
+             th:text="${desk.deskName + ' (' + desk.capacity + ' ghế)'}">
+        </div>
+
+        <div class="info">
+            Phòng: <b th:text="${desk.room.roomName}"></b><br>
+            Tầng:  <b th:text="${desk.room.floor.floorName}"></b>
+        </div>
+
+        <!-- Nếu không có reservation -->
+        <div th:if="${res == null}">
+            <div class="info">Trạng thái: <b style="color:#2ecc71;">Trống</b></div>
+        </div>
+
+        <!-- Nếu có reservation -->
+        <div th:if="${res != null}">
+            <div class="info">
+                Trạng thái: <b style="color:#e74c3c;">Đang sử dụng</b>
+            </div>
+
+            <div class="info">
+                Khách: <b th:text="${res.customer.name}"></b>
+            </div>
+
+            <div class="info">
+                Thời gian:
+                <span th:text="${#temporals.format(res.startTime, 'HH:mm')}"></span> -
+                <span th:text="${#temporals.format(res.endTime, 'HH:mm')}"></span>
+            </div>
+
+            <div class="info">
+                Combo: <b th:text="${res.combo.comboName}"></b>
+            </div>
+
+            <div class="info">
+                Số người: <b th:text="${res.peopleCount}"></b>
+            </div>
+
+            <div class="info" th:if="${res.note != null}">
+                Ghi chú: <i th:text="${res.note}"></i>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

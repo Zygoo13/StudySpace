@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Dịch vụ</title>
+    <style>
+        body { font-family: Arial; padding:20px; }
+        table { border-collapse: collapse; width: 90%; margin-top:20px; }
+        th, td { border:1px solid #ccc; padding:10px; text-align:left; }
+        th { background:#f0f0f0; }
+        .btn { padding:6px 10px; border:none; cursor:pointer; margin:2px; }
+        .add-box { margin-bottom:20px; }
+        .delete-btn { background:#ff7675; color:white; }
+        .edit-btn { background:#74b9ff; color:white; }
+        .save-btn { background:#2ecc71; color:white; }
+    </style>
+</head>
+<body>
+
+<h2>Quản lý Dịch vụ</h2>
+
+<!-- THÊM DỊCH VỤ -->
+<div class="add-box">
+    <form th:action="@{/service/add}" th:object="${newService}" method="post">
+        <input type="text" th:field="*{serviceName}" placeholder="Tên dịch vụ (VD: Máy chiếu)" required>
+        <input type="text" th:field="*{description}" placeholder="Mô tả">
+        <input type="number" name="totalQuantity" placeholder="Số lượng tổng" min="0" required>
+
+        <button class="btn save-btn" type="submit">+ Thêm dịch vụ</button>
+    </form>
+</div>
+
+<!-- DANH SÁCH DỊCH VỤ -->
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Tên dịch vụ</th>
+        <th>Mô tả</th>
+        <th>Số lượng tổng</th>
+        <th>Hành động</th>
+    </tr>
+
+    <tr th:each="s : ${services}">
+        <td th:text="${s.serviceId}"></td>
+        <td th:text="${s.serviceName}"></td>
+        <td th:text="${s.description}"></td>
+
+        <!-- Sửa phần số lượng -->
+        <td th:text="${s.inventory != null ? s.inventory.totalQuantity : 0}"></td>
+
+        <td>
+            <!-- Nút sửa -->
+            <a th:href="@{'/service/edit/' + ${s.serviceId}}">
+                <button class="btn edit-btn" type="button">Sửa</button>
+            </a>
+
+            <!-- Nút xóa -->
+            <form th:action="@{'/service/delete/' + ${s.serviceId}}" method="post" style="display:inline;">
+                <button class="btn delete-btn" type="submit">Xóa</button>
+            </form>
+        </td>
+    </tr>
+
+</table>
+
+</body>
+</html>

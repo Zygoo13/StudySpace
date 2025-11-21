@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đặt chỗ - Bước 1</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary">Đặt chỗ học - Bước 1: Nhập thông tin</h2>
+
+    <form th:action="@{/booking/available}" th:object="${request}" method="post"
+          class="card p-4 shadow-sm">
+
+        <div class="mb-3">
+            <label class="form-label">Ngày:</label>
+            <input type="date" th:field="*{date}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Giờ bắt đầu:</label>
+            <input type="time" th:field="*{startTime}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Combo giờ:</label>
+            <select th:field="*{comboId}" class="form-select" required>
+                <option value="">-- Chọn combo --</option>
+                <option th:each="c : ${combos}"
+                        th:value="${c.comboId}"
+                        th:text="${c.comboName + ' (' + c.hours + ' giờ)'}">
+                </option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Số người:</label>
+            <input type="number" th:field="*{peopleCount}" min="1" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Tìm phòng/bàn trống</button>
+
+    </form>
+</div>
+
+</body>
+</html>
