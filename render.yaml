@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: studyspace
+    env: java
+    plan: free
+    buildCommand: "mvn clean package -DskipTests"
+    startCommand: "java -jar target/*.jar"

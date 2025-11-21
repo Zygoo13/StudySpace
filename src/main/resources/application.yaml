@@ -1,9 +1,9 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/Study_Space
+    url: ${jdbc:mysql://localhost:3306/Study_Space}
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
